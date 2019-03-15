@@ -4,32 +4,32 @@ module control(
 		input go,
 		output reg  ld_y, ld_x, ld_c,
 		output reg  en_plot,
-		output reg  [1:0]  pos_add_y, pos_add_x,
-		output reg 	shift_left, shift_right
+		output reg  [1:0]  pos_add_y, pos_add_x
 		);
 	reg [5:0] current_state, next_state;
 
 	localparam S_MENU 	= 5'd0,
-		S_MENU_WAIT 		= 5'd1,
-		S_DRAW_0     		= 5'd4, //  00111 in binary
-		S_DRAW_1				= 5'd5, //  01111 in binary
-		S_DRAW_2				= 5'd6, //  11111 in binary
-		S_DRAW_3				= 5'd7, // 01011 in binary
-		S_DRAW_4				= 5'd8, // 01100 in binary
-		S_DRAW_5 			= 5'd9, //  01000 in binary
-		S_DRAW_6 			= 5'd10, // 01000 in binary
-		S_DRAW_7				= 5'd11, // 01000 in binary
+		S_MENU_WAIT 	= 5'd1,
+		S_DRAW_0     	= 5'd4, //  00111 in binary
+		S_DRAW_1		= 5'd5, //  01111 in binary
+		S_DRAW_2		= 5'd6, //  11111 in binary
+		S_DRAW_3		= 5'd7, // 01011 in binary
+		S_DRAW_4		= 5'd8, // 01100 in binary
+		S_DRAW_5 		= 5'd9, //  01000 in binary
+		S_DRAW_6 		= 5'd10, // 01000 in binary
+		S_DRAW_7		= 5'd11, // 01000 in binary
 		S_DRAW_8       	= 5'd12, // 01000 in binary
 		S_DRAW_9       	= 5'd13, // 01000 in binary
 		S_DRAW_10      	= 5'd14, // 01000 in binary
-		S_DRAW_11     		= 5'd15, // 01000 in binary
-		S_DRAW_12     		= 5'd16, // 01000 in binary
+		S_DRAW_11     	= 5'd15, // 01000 in binary
+		S_DRAW_12     	= 5'd16, // 01000 in binary
 		S_DRAW_13      	= 5'd17, // 01000 in binary
 		S_DRAW_14      	= 5'd18, // 01000 in binary
 		S_DRAW_15      	= 5'd19, // 01000 in binary
-		S_DRAW_WAIT			= 5'd20,
-		S_LEFT				= 5'd22,
-		S_RIGHT 				= 5'd23;
+		S_DRAW_WAIT		= 5'd20,
+		S_ERASE_OLD		= 4'd21
+		S_LEFT			= 5'd22,
+		S_RIGHT 		= 5'd23;
 
 	// Next state logic aka our state table
 	always@(*)
@@ -55,8 +55,9 @@ module control(
 			S_DRAW_13: next_state = S_DRAW_14;
 			S_DRAW_14: next_state = S_DRAW_15;
 			S_DRAW_15: next_state = S_DRAW_WAIT;
-			S_DRAW_WAIT: next_state = mv_left ? S_LEFT;
-			S_DRAW_WAIT: next_state = mv_right ? S_RIGHT;// if mv left is high then go to mv left state
+			S_DRAW_WAIT: next_state = (mv_left | mv_right) ? S_ERASE_OLD: S_DRAW_WAIT; // if mv left is high then go to mv left state
+			S_ERASE_OLD: next_state = mv_left ? S_LEFT: S_ERASE_OLD;
+			S_ERASE_OLD: next_state = mv_right ? S_RIGHT: S_ERASE_OLD;
 			S_LEFT: next_state = S_DRAW_0;
 			S_RIGHT: next_state = S_DRAW_0;
 			default:     next_state = S_MENU;
@@ -160,13 +161,6 @@ module control(
 				pos_add_y = 2'b11;
 				pos_add_x = 2'b11;
 			end
-			S_LEFT: begin
-				shift_left = 1'b1;
-				en_plot = 1'b1;
-			S_RIGHT: begin
-				shift_right = 1'b1;
-				en_plot = 1'b1;
-				
 			// default:    // don't need default since we already made sure all of our outputs were assigned a value at the start of the always block
 		endcase
 	end // enable_signals
@@ -175,7 +169,7 @@ module control(
 	always@(posedge clk)
 	begin: state_FFs
 		if(!resetn)
-			current_state <= S_MENU;
+			current_state <= S_LOAD_Y;
 		else
 			current_state <= next_state;
 	end // state_FFS
@@ -186,7 +180,6 @@ module datapath(
 		input resetn,
 		input [9:0] data_in,
 		input [1:0] pos_add_y, pos_add_x,
-		input shift_left, shift_right,
 		input ld_y,
 		input ld_x,
 		input ld_c,
@@ -213,42 +206,5 @@ module datapath(
 			if(ld_c)
 				ci <= 3'b100; // color red
 		end
-	end
-	
-	always @(*)
-	begin : XY_ADD
-		case (pos_add_y)
-			2'b01: begin
-				y <= yi + 2'b01;
-			end
-			2'b10: begin
-				y <= yi + 2'b10;
-			end
-			2'b11: begin
-				y <= yi + 2'b11;
-			end
-			default: y <= yi;
-		endcase
-		case (pos_add_x)
-			2'b01: begin
-				x <= xi + 2'b01;
-			end
-			2'b10: begin
-				x <= xi + 2'b10;
-			end
-			2'b11: begin
-				x <= xi + 2'b11;
-			end
-			default: x <= xi;
-		endcase
-		case (shift_left)
-			1'b1: begin
-				x <= xi - 1'b1;
-		endcase
-		case (shift_right)
-			1'b1: begin
-				x <= xi + 1'b1;
-		endcase
-		c <= ci;
 	end
 endmodule

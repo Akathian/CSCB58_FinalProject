@@ -40,7 +40,6 @@ module Rain
 	wire [6:0] y; // start at d100 b1100100
 	wire [1:0] pos_add_y, pos_add_x;
 	wire writeEn;
-
 	// Create an Instance of a VGA controller - there can be only one!
 	// Define the number of colours as well as the initial background
 	// image file (.MIF) for the controller.
