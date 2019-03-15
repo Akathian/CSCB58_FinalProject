@@ -1,0 +1,82 @@
+CSCB58 Project Report: Winter 2019
+
+Team Member A
+-------------
+First Name: Akathian
+Last Name: Santhakumar
+Student Number: 1003993798
+UofT E-mail Address: akathian.santhakumar@mail.utoronto.ca
+
+
+Team Member B
+-------------
+First Name: Ahmad Ali
+Last Name: Shah
+Student Number: 1004192287
+UofT E-mail Address: ahmadali.shah@mail.utoronto.ca
+
+Team Member C (Optional)
+-------------
+First Name: 
+Last Name:
+Student Number:
+UofT E-mail Address:
+
+Team Member D (Optional)
+-------------
+First Name: 
+Last Name:
+Student Number:
+UofT E-mail Address:
+
+
+Project Plan
+--------
+
+Project Title: Rain
+
+
+Provide a one paragraph description of your project: 
+
+The game will consist of randomly falling blue rectangles (ie Rain) which the player will have to avoid by moving left or right
+in order to score points. Each rain block that reaches the end without the player touching it will be one point.
+
+
+What is your plan for the first week?
+Implement the player block and be able to move it left and right
+
+
+What is your plan for the second week?
+Generate randomly falling rain blocks and implement collision with the player
+
+
+What is your plan for the third week?
+Add scoring feature
+
+
+What is your backup plan if things don’t work out as planned?
+
+
+
+Weekly Reports
+--------------
+<In this space, provide a report each week of what worked and what didn't, and what (if any) changes were made to your proposal)>
+
+
+[This is an example of a report where things didn't go so well.]
+Week 1: 
+	We drew out the state diagrams required to draw and move the player block. We coded for the player block but we are stuck at getting the player to move properly. We are planning on researching this further by looking at other similar code that has horizontal moving blocks. 
+	
+
+References
+----------
+<In this space clearly indicate all external sources used in this project. If you used anyone else's code (from previous B58 projects or other sources) clearly indicate what you used and where you found it. Usage of any material not credited in this space will be considered plagiarism. It is absolutely OK and expected to update this section as you progress in the projected.
+
+Make sure to document what you added on top of the existing work, especially if you work with a previous project. What is it that YOU added?>
+
+
+
+Repo & Video
+------------
+<At the end of the project, provide links to your code repository and presentation video (and passwords if not public>
+
