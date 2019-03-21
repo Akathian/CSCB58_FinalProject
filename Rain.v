@@ -1,9 +1,13 @@
-module Rain
+`include "vga_adapter/vga_adapter.v"
+`include "vga_adapter/vga_address_translator.v"
+`include "vga_adapter/vga_controller.v"
+`include "vga_adapter/vga_pll.v"
+
+module vgatest
 	(
 		CLOCK_50,						//	On Board 50 MHz
 		// Your inputs and outputs here
         KEY,
-        SW,
 		// The ports below are for the VGA output.  Do not change.
 		VGA_CLK,   						//	VGA Clock
 		VGA_HS,							//	VGA H_SYNC
@@ -16,7 +20,6 @@ module Rain
 	);
 
 	input			CLOCK_50;				//	50 MHz
-	input   [9:0]   SW;
 	input   [3:0]   KEY;
 
 	// Declare your inputs and outputs here
@@ -30,27 +33,19 @@ module Rain
 	output	[9:0]	VGA_G;	 				//	VGA Green[9:0]
 	output	[9:0]	VGA_B;   				//	VGA Blue[9:0]
 	
-	wire resetn, go, load, ld_y, ld_x, ld_c;
-	assign resetn = KEY[0];
-	assign load = KEY[3];
-	assign go = KEY[1];
+	
 	
 	// Create the colour, x, y and writeEn wires that are inputs to the controller.
-	wire [7:0] x;
-	wire [6:0] y;
-	wire [1:0] pos_add_y, pos_add_x;
-	wire writeEn;
-
 	// Create an Instance of a VGA controller - there can be only one!
 	// Define the number of colours as well as the initial background
 	// image file (.MIF) for the controller.
 	vga_adapter VGA(
-			.resetn(resetn),
+			.resetn(1'b1),
 			.clock(CLOCK_50),
-			.colour(3'b100), // color red
+			.colour(colour),
 			.x(x),
 			.y(y),
-			.plot(writeEn),
+			.plot(1'b1),
 			/* Signals for the DAC to drive the monitor. */
 			.VGA_R(VGA_R),
 			.VGA_G(VGA_G),
@@ -64,276 +59,106 @@ module Rain
 		defparam VGA.MONOCHROME = "FALSE";
 		defparam VGA.BITS_PER_COLOUR_CHANNEL = 1;
 		defparam VGA.BACKGROUND_IMAGE = "black.mif";
-			
-	// Put your code here. Your code should produce signals x,y,colour and writeEn/plot
-	// for the VGA controller, in addition to any other functionality your design may require.
-    
-    // Instansiate datapath
-	// datapath d0(...);
-	datapath d0(
-	    .clk(CLOCK_50),
-	    .resetn(resetn),
-	    .data_in(SW[9:0]),
-	    .pos_add_y(pos_add_y),
-       .pos_add_x(pos_add_x),
-	    .ld_y(ld_y),
-	    .ld_x(ld_x), 
-	    .ld_c(ld_c),
-	    .y(y),
-	    .x(x),
-	    .c(colour)
-	);
 
-	control c0(
-	    .clk(CLOCK_50),
-	    .resetn(resetn),
-	    .go(go),
-	    .ld_y(ld_y),
-	    .ld_x(ld_x),
-	    .ld_c(ld_c),
-	    .en_plot(writeEn),
-	    .pos_add_y(pos_add_y),
-	    .pos_add_x(pos_add_x)
-	    );
-    
+   reg [5:0] current_state;
+	reg player_init;
+	reg [7:0] x, y;
+	reg [7:0] p_x, p_y;
+	reg [2:0] colour;
+   reg [17:0] draw_counter;	
+	wire frame;
+	
+   localparam  S_RESET       		= 6'd0, // 00000 in binary
+               S_PLAYER_INIT   	= 6'd1, // 00001 in binary
+               S_PLAYER_ERASE 	= 6'd2,
+					S_IDLE 				= 6'd3,
+					S_PLAYER_UPDATE 	= 6'd4,
+					S_PLAYER_DRAW 		= 6'd5;
+		
+   clock(.clock(CLOCK_50), .clk(frame));
+   // Next state logic aka our state table
+   always@(posedge CLOCK_50)
+		begin
+			player_init = 1'b0;
+			colour = 3'b000;
+			x = 8'b00000000;
+			y = 8'b00000000;
+			if (~KEY[0]) current_state = S_RESET;
+			case(current_state)
+				S_RESET: begin
+					if (draw_counter < 17'b10000000000000000) begin
+						x = draw_counter[7:0];
+						y = draw_counter[16:8];
+						draw_counter = draw_counter + 1'b1;
+					end
+					else begin
+						draw_counter= 8'b00000000;
+						current_state = S_PLAYER_INIT;
+					end
+				end
+				S_PLAYER_INIT: begin
+					if (draw_counter < 6'b10000) begin
+						p_x = 8'd76;
+						p_y = 8'd110;
+						x = p_x + draw_counter[3:0];
+						y = p_y + draw_counter[4];
+						draw_counter = draw_counter + 1'b1;
+						colour = 3'b111;
+					end
+					else begin
+						draw_counter= 8'b00000000;
+						current_state = S_IDLE;
+					end
+				end
+				S_IDLE: begin
+					if (frame)
+						current_state = S_PLAYER_ERASE;
+					end
+				S_PLAYER_ERASE: begin
+					if (draw_counter < 6'b100000) begin
+						x = p_x + draw_counter[3:0];
+						y = p_y + draw_counter[4];
+						draw_counter = draw_counter + 1'b1;
+					end
+					else begin
+						draw_counter= 8'b00000000;
+						current_state = S_PLAYER_UPDATE;
+					end
+				end
+				S_PLAYER_UPDATE: begin
+					if (~KEY[1] && p_x < 8'd144) p_x = p_x + 1'b1;
+					if (~KEY[2] && p_x > 8'd0) p_x = p_x - 1'b1;
+					current_state = S_PLAYER_DRAW;
+				end
+				S_PLAYER_DRAW: begin
+					if (draw_counter < 6'b100000) begin
+						x = p_x + draw_counter[3:0];
+						y = p_y + draw_counter[4];
+						draw_counter = draw_counter + 1'b1;
+						colour = 3'b111;
+					end
+					else begin
+						draw_counter= 8'b00000000;
+						current_state = S_IDLE;
+					end
+				end
+			endcase // state_table 
+		end
 endmodule
 
-module control(
-    input clk,
-    input resetn,
-    input go,
-    output reg  ld_y, ld_x, ld_c,
-    output reg  en_plot,
-    output reg  [1:0]  pos_add_y, pos_add_x
-    );
-    reg [5:0] current_state, next_state;
-    
-    localparam S_LOAD_Y       = 5'd0, // 00000 in binary
-               S_LOAD_Y_WAIT  = 5'd1, // 00001 in binary
-               S_LOAD_X       = 5'd2, // 00010 in binary
-               S_LOAD_X_WAIT  = 5'd3, // 00011 in binary
-					S_LOAD_C       = 5'd4, // 00010 in binary
-               S_LOAD_C_WAIT  = 5'd5, // 00011 in binary
-               S_DRAW_0       = 5'd6, //  00111 in binary
-               S_DRAW_1       = 5'd7, //  01111 in binary
-               S_DRAW_2       = 5'd8, //  11111 in binary
-					S_DRAW_3			= 5'd9, // 01011 in binary
-					S_DRAW_4			= 5'd10, // 01100 in binary
-					S_DRAW_5       = 5'd11, //  01000 in binary
-					S_DRAW_6       = 5'd12, // 01000 in binary
-					S_DRAW_7       = 5'd13, // 01000 in binary
-					S_DRAW_8       = 5'd14, // 01000 in binary
-					S_DRAW_9       = 5'd15, // 01000 in binary
-					S_DRAW_10      = 5'd16, // 01000 in binary
-					S_DRAW_11      = 5'd17, // 01000 in binary
-					S_DRAW_12      = 5'd18, // 01000 in binary
-					S_DRAW_13      = 5'd19, // 01000 in binary
-					S_DRAW_14      = 5'd20, // 01000 in binary
-					S_DRAW_15      = 5'd21; // 01000 in binary
-						
-    
-    // Next state logic aka our state table
-    always@(*)
-    begin: state_table 
-            case (current_state)
-		// One line if format = COND. ? if true: if false
-						S_LOAD_Y: next_state = go ? S_LOAD_Y_WAIT : S_LOAD_Y; // Loop in current state until value is input
-						S_LOAD_Y_WAIT: next_state = go ? S_LOAD_Y_WAIT : S_LOAD_X; // Loop in current state until go signal goes low
-						S_LOAD_X: next_state = go ? S_LOAD_X_WAIT : S_LOAD_X; // Loop in current state until value is input
-						S_LOAD_X_WAIT: next_state = go ? S_LOAD_X_WAIT : S_LOAD_C; // Loop in current state until go signal goes low
-						S_LOAD_C: next_state = go ? S_LOAD_C_WAIT : S_LOAD_C; // Loop in current state until value is input
-						S_LOAD_C_WAIT: next_state = go ? S_LOAD_C_WAIT : S_DRAW_0; // Loop in current state until go signal goes low
-						S_DRAW_0: next_state = S_DRAW_1;
-						S_DRAW_1: next_state = S_DRAW_2;
-						S_DRAW_2: next_state = S_DRAW_3;
-						S_DRAW_3: next_state = S_DRAW_4;
-						S_DRAW_4: next_state = S_DRAW_5;
-						S_DRAW_5: next_state = S_DRAW_6;
-						S_DRAW_6: next_state = S_DRAW_7;
-						S_DRAW_7: next_state = S_DRAW_8;
-						S_DRAW_8: next_state = S_DRAW_9;
-						S_DRAW_9: next_state = S_DRAW_10;
-						S_DRAW_10: next_state = S_DRAW_11;
-						S_DRAW_11: next_state = S_DRAW_12;
-						S_DRAW_12: next_state = S_DRAW_13;
-						S_DRAW_13: next_state = S_DRAW_14;
-						S_DRAW_14: next_state = S_DRAW_15;
-						S_DRAW_15: next_state = S_LOAD_Y;// we will be done our operations, start over after
-            default:     next_state = S_LOAD_Y;
-        endcase
-    end // state_table
-    
-
-    // Output logic aka all of our datapath control signals
-    always @(*)
-    begin: enable_signals
-        // By default make all our signals 0  
-        ld_y = 1'b0;
-        ld_x = 1'b0;
-	ld_c = 1'b0;
-	pos_add_y = 2'b00;
-	pos_add_x = 2'b00;
-        en_plot = 1'b0;
-
-        case (current_state)
-            S_LOAD_Y: begin
-                ld_y = 1'b1;
-                end
-            S_LOAD_X: begin
-                ld_x = 1'b1;
-                end
-				S_LOAD_C: begin
-                ld_c = 1'b1;
-                end
-            S_DRAW_0: begin 
-                en_plot = 1'b1;
-            end
-				S_DRAW_1: begin 
-					pos_add_y = 2'b01;
-					pos_add_x = 2'b00;
-					en_plot = 1'b1;
-            end
-				 S_DRAW_2: begin 
-					pos_add_y = 2'b10;
-					pos_add_x = 2'b00;
-					en_plot = 1'b1;
-            end
-				 S_DRAW_3: begin 
-					pos_add_y = 2'b11;
-					pos_add_x = 2'b00;
-					en_plot = 1'b1;
-            end
-				 S_DRAW_4: begin 
-					pos_add_y = 2'b00;
-					pos_add_x = 2'b01;
-					en_plot = 1'b1;
-            end
-				 S_DRAW_5: begin 
-					pos_add_y = 2'b01;
-					pos_add_x = 2'b01;
-					en_plot = 1'b1;
-				end
-				 S_DRAW_6: begin 
-					pos_add_y = 2'b10;
-					pos_add_x = 2'b01;
-					en_plot = 1'b1;
-				end
-				S_DRAW_7: begin 
-					pos_add_y = 2'b11;
-					pos_add_x = 2'b01;
-					en_plot = 1'b1;
-            end
-				 S_DRAW_8: begin 
-					pos_add_y = 2'b00;
-					pos_add_x = 2'b10;
-					en_plot = 1'b1;
-            end
-				 S_DRAW_9: begin 
-					pos_add_y = 2'b01;
-					pos_add_x = 2'b10;
-					en_plot = 1'b1;
-            end
-				 S_DRAW_10: begin 
-					pos_add_y = 2'b10;
-					pos_add_x = 2'b10;
-					en_plot = 1'b1;
-            end
-				 S_DRAW_11: begin 
-					pos_add_y = 2'b11;
-					pos_add_x = 2'b10;
-					en_plot = 1'b1;
-            end
-				 S_DRAW_12: begin 
-					en_plot = 1'b1;
-					pos_add_y = 2'b00;
-					pos_add_x = 2'b11;
-            end
-				S_DRAW_13: begin 
-					en_plot = 1'b1;
-					pos_add_y = 2'b01;
-					pos_add_x = 2'b11;
-            end
-            S_DRAW_14: begin 
-					en_plot = 1'b1;
-					pos_add_y = 2'b10;
-					pos_add_x = 2'b11;
-            end
-				S_DRAW_15: begin 
-					en_plot = 1'b1;
-					pos_add_y = 2'b11;
-					pos_add_x = 2'b11;
-            end
-        // default:    // don't need default since we already made sure all of our outputs were assigned a value at the start of the always block
-        endcase
-    end // enable_signals
-   
-    // current_state registers
-    always@(posedge clk)
-    begin: state_FFs
-        if(!resetn)
-            current_state <= S_LOAD_Y;
-        else
-            current_state <= next_state;
-    end // state_FFS
-endmodule
-
-module datapath(
-    input clk,
-    input resetn,
-    input [9:0] data_in,
-    input [1:0] pos_add_y, pos_add_x,
-    input ld_y,
-    input ld_x, 
-    input ld_c,
-    output reg [6:0] y,
-    output reg [7:0] x,
-    output reg [2:0] c
-    );
-    reg [6:0]yi = 7'b0;
-    reg [7:0]xi = 8'b0;
-    reg [2:0]ci = 3'b0;
-    // Registers a, b, c, x with respective input logic
-    always@(posedge clk) begin
-        if(!resetn) begin
-            yi <= 7'b0;
-            xi <= 8'b0;
-	    ci <= 3'b0;
-        end
+module clock(input clock, output clk);
+reg [19:0] frame_counter;
+reg frame;
+	always@(posedge clock)
+    begin
+        if (frame_counter == 20'b00000000000000000000) begin
+		  frame_counter = 20'b11001011011100110100;
+		  frame = 1'b1;
+		  end
         else begin
-            if(ld_y)
-                yi <= data_in[6:0];
-            if(ld_x)
-                xi <= {1'b0 , data_in[7:0]};
-	    if(ld_c)
-                ci <= data_in[9:7];
-        end
+			frame_counter = frame_counter - 1'b1;
+			frame = 1'b0;
+		  end
     end
-    always @(*)
-    begin : XY_ADD
-        case (pos_add_y)
-            2'b01: begin
-                   y <= yi + 2'b01;
-               end
-            2'b10: begin
-                   y <= yi + 2'b10;
-               end
-	    2'b11: begin
-                   y <= yi + 2'b11;
-               end
-            default: y <= yi;
-        endcase
-	case (pos_add_x)
-            2'b01: begin
-                   x <= xi + 2'b01;
-               end
-            2'b10: begin
-                   x <= xi + 2'b10;
-               end
-	    2'b11: begin
-                   x <= xi + 2'b11;
-               end
-            default: x <= xi;
-        endcase
-	c <= ci;
-    end
+	 assign clk = frame;
 endmodule
