@@ -3,7 +3,7 @@
 `include "vga_adapter/vga_controller.v"
 `include "vga_adapter/vga_pll.v"
 
-module vgatest
+module Rain
 	(
 		CLOCK_50,						//	On Board 50 MHz
 		// Your inputs and outputs here

@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<LOG_ROOT>
+	<PROJECT NAME="Rain">
+		<CBX_INST_ENTRY INSTANCE_NAME="|Rain|vga_adapter:VGA|altsyncram:VideoMemory" CBX_FILE_NAME="altsyncram_krf1.tdf"/>
+	</PROJECT>
+</LOG_ROOT>

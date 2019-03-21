@@ -1,0 +1,9 @@
+
+State Machine - |Rain|current_state
+Name current_state.S_PLAYER_DRAW current_state.S_PLAYER_UPDATE current_state.S_IDLE current_state.S_PLAYER_ERASE current_state.S_PLAYER_INIT current_state.S_RESET 
+current_state.S_RESET 0 0 0 0 0 0 
+current_state.S_PLAYER_INIT 0 0 0 0 1 1 
+current_state.S_PLAYER_ERASE 0 0 0 1 0 1 
+current_state.S_IDLE 0 0 1 0 0 1 
+current_state.S_PLAYER_UPDATE 0 1 0 0 0 1 
+current_state.S_PLAYER_DRAW 1 0 0 0 0 1 
