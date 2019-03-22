@@ -115,7 +115,7 @@ endmodule
 // https://github.com/julesyan/CSCB58-Final-Project
 // We changed the size ofthe player and the way you can move the player. Only stops moving when at ends of the
 // screen, otherwise it is constantly moving
-// We added a scoring system
+// We added a scoring system and a second player
 module control(
 	input clk,
 	input restart,
@@ -147,9 +147,8 @@ module control(
 					
 					S_PLAYER2_INIT			= 6'd7,
 					S_PLAYER2_ERASE		= 6'd8,
-					S_IDLE_P2				= 6'd9,
-					S_PLAYER2_UPDATE 		= 6'd10,
-					S_PLAYER2_DRAW			= 6'd11;
+					S_PLAYER2_UPDATE 		= 6'd9,
+					S_PLAYER2_DRAW			= 6'd10;
 		
    clock(.clock(clk), .clk(frame));
 			
