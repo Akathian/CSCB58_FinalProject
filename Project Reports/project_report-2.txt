@@ -49,8 +49,7 @@ Week 1:
 	We drew out the state diagrams required to draw and move the player block. We coded for the player block but we are stuck at getting the player to move properly. We are planning on researching this further by looking at other similar code that has horizontal moving blocks. 
 
 Week 2:
-	We got the player block to move using keys. The player block now defaults to moving to the right of the screen for difficulty. We started to look into implementing a scoring system that displays the score on the hex displays. 
-	
+	We got the player block to move using keys. Each block is controlled by switches for increased difficulty. The player block will move in right while the switch is on, and left while the switch is off. We added a scoring system: whenever the player is moving, their score will accumulate. If they are stationary (i.e. they are at the edges), their score will stop increasing in order to encourgae movement. We were initially having issues displaying the score. It would show the score, but it was being displayed using Hexadecimal. We used the double dabble algorithm to fix this and instead display it in decimal. We then added a second player, in order to make gameplay more interesting. We added a seperate score counter to keep track of the second player.
 
 References
 ----------
@@ -58,11 +57,16 @@ References
 
 Make sure to document what you added on top of the existing work, especially if you work with a previous project. What is it that YOU added?>
 
-Used this follwing project for the basics of block movement. We are adding the block moving automatically to the right for the difficulty. 
+Moveable character sourced from this link
+We changed the size of the player and the way you can move the player: it only stops moving when at ends of the screen, otherwise it is constantly moving
+We also added a scoring system and a second player
 https://github.com/julesyan/CSCB58-Final-Project/blob/master/project.v
+
+Used this code for the double dabble algorithm. We added code to it so that it can display numbers in the thousands
+https://pubweb.eng.utah.edu/~nmcdonal/Tutorials/BCDTutorial/BCDConversion.html
 
 
 Repo & Video
 ------------
 <At the end of the project, provide links to your code repository and presentation video (and passwords if not public>
-
+https://github.com/Akathian/CSCB58_FinalProject
