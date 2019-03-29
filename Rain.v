@@ -73,6 +73,8 @@ module Rain
 	wire [9:0] p1_score, p2_score;
 	input [17:0] SW;
 	output [17:0] LEDR;
+	wire [7:0] rand;
+	
 	control c0(.clk(CLOCK_50),
 					.restart(KEY[0]),
 					.move_p1(SW[0]),
@@ -81,10 +83,22 @@ module Rain
 					.y(y),
 					.colour(colour),
 					.p1_score(p1_score),
-					.p2_score(p2_score));
+					.p2_score(p2_score)
+					);
+					
+	
+	
+	
 	output [6:0] HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7;
 	wire [3:0] p1_thousands, p1_hundreds, p1_tens, p1_ones;
 	wire [3:0] p2_thousands, p2_hundreds, p2_tens, p2_ones;
+	
+	wire [7:0] random;
+	wire r;
+	assign r = SW[4];
+	random_num rand_gen(.clk(CLOCK_50), .reset(r), .data_out(random));
+	assign LEDR[7:0] = random;
+	
 	BCD p1_bcd(
 				  .binary(p1_score[9:0]),
 				  .Thousands(p1_thousands),
@@ -128,12 +142,17 @@ module control(
 	output reg [9:0] p2_score
 	);
    reg [5:0] current_state;
-	reg p1_init;
-	reg p2_init;
+	reg p1_init, p2_init;
+	reg r1_init;
 	reg [7:0] pos_x_p1, pos_y_p1;
 	reg [7:0] pos_x_p2, pos_y_p2;
+	reg [7:0] pos_x_r1, pos_y_r1;
    reg [17:0] draw_counter_p1, draw_counter_p2;
+	reg [17:0] draw_counter_r1;
 	reg [31:0] score_counter;
+	
+
+	
 	wire frame;
 	
    localparam  S_RESET_P1       		= 6'd0,
@@ -148,7 +167,13 @@ module control(
 					S_PLAYER2_INIT			= 6'd7,
 					S_PLAYER2_ERASE		= 6'd8,
 					S_PLAYER2_UPDATE 		= 6'd9,
-					S_PLAYER2_DRAW			= 6'd10;
+					S_PLAYER2_DRAW			= 6'd10,
+					
+					S_RESET_R1				= 6'd11,
+					S_RAIN_1_INIT			= 6'd12,
+					S_RAIN_1_ERASE			= 6'd13,
+					S_RAIN_1_UPDATE		= 6'd14,
+					S_RAIN_1_DRAW			= 6'd15;
 		
    clock(.clock(clk), .clk(frame));
 			
@@ -157,6 +182,7 @@ module control(
 		begin
 			p1_init = 1'b0;
 			p2_init = 1'b0;
+			r1_init = 1'b0;
 			colour = 3'b000;
 			x = 8'b00000000;
 			y = 8'b00000000;
@@ -186,6 +212,19 @@ module control(
 
 					else begin
 						draw_counter_p2= 8'b00000000;
+						current_state = S_RESET_R1;
+					end
+				end
+				
+				S_RESET_R1: begin
+					if (draw_counter_r1 < 17'b10000000000000000) begin
+						x = draw_counter_r1[7:0];
+						y = draw_counter_r1[16:8];
+						draw_counter_r1 = draw_counter_r1 + 1'b1;
+					end
+
+					else begin
+						draw_counter_r1= 8'b00000000;
 						current_state = S_PLAYER1_INIT;
 					end
 				end
@@ -205,6 +244,8 @@ module control(
 						current_state = S_PLAYER2_INIT;
 					end
 				end
+				
+				
 				//init player 2
 				S_PLAYER2_INIT: begin
 					if (draw_counter_p2 < 6'b10000) begin
@@ -217,10 +258,24 @@ module control(
 					end
 					else begin
 						draw_counter_p2= 8'b00000000;
-						current_state = S_IDLE;
+						current_state = S_RAIN_1_INIT;
 					end
 				end
 				
+				S_RAIN_1_INIT: begin
+					if (draw_counter_r1 < 6'b10000) begin
+							pos_x_r1 = 8'b10;
+							pos_y_r1 = 8'd0;
+							x = pos_x_r1 + draw_counter_r1[0];
+							y = pos_y_r1 + draw_counter_r1 [4];
+							draw_counter_r1 = draw_counter_r1 + 1'b1;
+							colour = 3'b001;
+						end
+						else begin
+							draw_counter_r1= 8'b00000000;
+							current_state = S_IDLE;
+						end
+					end
 				//idle state
 				S_IDLE: begin
 					if (frame)
@@ -303,11 +358,43 @@ module control(
 					end
 					else begin
 						draw_counter_p2= 8'b00000000;
+						current_state = S_RAIN_1_ERASE;
+					end
+				end
+				
+				//erase player 2
+				S_RAIN_1_ERASE: begin
+					if (draw_counter_r1 < 6'b100000) begin
+						x = pos_x_r1 + draw_counter_r1[0];
+						y = pos_y_r1 + draw_counter_r1[6:4];
+						draw_counter_r1 = draw_counter_r1 + 1'b1;
+					end
+					else begin
+						draw_counter_r1= 8'b00000000;
+						current_state = S_RAIN_1_UPDATE;
+					end
+				end
+
+				//update player 2
+				S_RAIN_1_UPDATE: begin
+					pos_y_r1 = pos_y_r1 + 1'b1;
+					current_state = S_RAIN_1_DRAW;
+				end
+								
+				//draw player 2
+				S_RAIN_1_DRAW: begin
+					if (draw_counter_r1 < 6'b100000) begin
+						x = pos_x_r1 + draw_counter_r1[0];
+						y = pos_y_r1 + draw_counter_r1[6:4];
+						draw_counter_r1 = draw_counter_r1 + 1'b1;
+						colour = 3'b001;
+					end
+					else begin
+						draw_counter_r1= 8'b00000000;
 						current_state = S_IDLE;
 					end
 				end
-			endcase // state_table
-
+			endcase	
 		end
 endmodule
 
@@ -384,7 +471,7 @@ module BCD (
     begin
       //add 3 to columns >= 5
 		if (Thousands >= 5)
-			Thousands = Thousands + 3;// https://github.com/julesyan/CSCB58-Final-Project
+			Thousands = Thousands + 3;
 
       if (Hundreds >= 5)
         Hundreds = Hundreds + 3;
@@ -404,4 +491,22 @@ module BCD (
       Ones[0] = binary[i];
     end
   end
+endmodule
+
+
+module random_num(
+	input  clk,
+   input  reset,
+   output [8:0] data_out);
+	reg [8:0] data = 8'd1;
+	always @(posedge clk)
+		begin
+			if (!reset)
+				data <= data;
+			else if(data == 8'b11111111 | data == 8'b00000000)
+				data <= 8'd1;
+			else 
+				data <= {data[7:0], data[7] ^ data[1]};
+			end
+		assign data_out = data;
 endmodule
