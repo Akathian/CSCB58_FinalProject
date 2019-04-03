@@ -74,7 +74,7 @@ module Rain
 	input [17:0] SW;
 	output [17:0] LEDR;
 	wire [7:0] random;
-	
+
 	control c0(.clk(CLOCK_50),
 					.restart(KEY[0]),
 					.move_p1(SW[0]),
@@ -144,9 +144,17 @@ module control(
 	reg [7:0] pos_x_p1, pos_y_p1;
 	reg [7:0] pos_x_p2, pos_y_p2;
 	reg [7:0] pos_x_r1, pos_y_r1;
+	reg [7:0] pos_x_r2, pos_y_r2;
+	reg [7:0] pos_x_r3, pos_y_r3;
+	reg [7:0] pos_x_r4, pos_y_r4;
+	reg [7:0] pos_x_r5, pos_y_r5;
    reg [17:0] draw_counter_p1, draw_counter_p2;
-	reg [17:0] draw_counter_r1;
-	reg [31:0] score_counter;
+	reg [17:0] draw_counter_r1, 
+				  draw_counter_r2,
+				  draw_counter_r3,
+				  draw_counter_r4,
+				  draw_counter_r5;
+	reg [17:0] draw_counter_dead;
 
 	
 	wire frame;
@@ -165,11 +173,33 @@ module control(
 					S_PLAYER2_UPDATE 		= 6'd9,
 					S_PLAYER2_DRAW			= 6'd10,
 					
-					S_RESET_R1				= 6'd11,
 					S_RAIN_1_INIT			= 6'd12,
 					S_RAIN_1_ERASE			= 6'd13,
 					S_RAIN_1_UPDATE		= 6'd14,
-					S_RAIN_1_DRAW			= 6'd15;
+					S_RAIN_1_DRAW			= 6'd15,
+					
+					S_RAIN_2_INIT			= 6'd16,
+					S_RAIN_2_ERASE			= 6'd17,
+					S_RAIN_2_UPDATE		= 6'd18,
+					S_RAIN_2_DRAW			= 6'd19,
+					
+					S_RAIN_3_INIT			= 6'd20,
+					S_RAIN_3_ERASE			= 6'd21,
+					S_RAIN_3_UPDATE		= 6'd22,
+					S_RAIN_3_DRAW			= 6'd23,
+					
+					S_RAIN_4_INIT			= 6'd24,
+					S_RAIN_4_ERASE			= 6'd25,
+					S_RAIN_4_UPDATE		= 6'd26,
+					S_RAIN_4_DRAW			= 6'd27,
+					
+					S_RAIN_5_INIT			= 6'd28,
+					S_RAIN_5_ERASE			= 6'd29,
+					S_RAIN_5_UPDATE		= 6'd30,
+					S_RAIN_5_DRAW			= 6'd31,
+					
+					S_PLAYER1_WIN			= 6'd32,
+					S_PLAYER2_WIN			= 6'd33;
 		
    clock(.clock(clk), .clk(frame));
 
@@ -187,6 +217,7 @@ module control(
 				// if reset button is pressed
 				S_RESET_P1: begin
 					if (draw_counter_p1 < 17'b10000000000000000) begin
+						draw_counter_dead = 17'd0;
 						x = draw_counter_p1[7:0];
 						y = draw_counter_p1[16:8];
 						p1_score = 10'b0;
@@ -207,19 +238,6 @@ module control(
 					end
 					else begin
 						draw_counter_p2= 8'b00000000;
-						current_state = S_RESET_R1;
-					end
-				end
-				
-				S_RESET_R1: begin
-					if (draw_counter_r1 < 17'b10000000000000000) begin
-						x = draw_counter_r1[7:0];
-						y = draw_counter_r1[16:8];
-						draw_counter_r1 = draw_counter_r1 + 1'b1;
-					end
-
-					else begin
-						draw_counter_r1= 8'b00000000;
 						current_state = S_PLAYER1_INIT;
 					end
 				end
@@ -268,9 +286,70 @@ module control(
 						end
 						else begin
 							draw_counter_r1= 8'b00000000;
+							current_state = S_RAIN_2_INIT;
+						end
+					end
+					
+				S_RAIN_2_INIT: begin
+					if (draw_counter_r2 < 6'b10000) begin
+							pos_x_r2 <= random;
+							pos_y_r2 = 8'd0;
+							x = pos_x_r2 + draw_counter_r2[0];
+							y = pos_y_r2 + draw_counter_r2 [4];
+							draw_counter_r2 = draw_counter_r2 + 1'b1;
+							colour = 3'b001;
+						end
+						else begin
+							draw_counter_r2= 8'b00000000;
 							current_state = S_IDLE;
 						end
 					end
+				
+				S_RAIN_3_INIT: begin
+					if (draw_counter_r3 < 6'b10000) begin
+							pos_x_r3 <= random;
+							pos_y_r3 = 8'd0;
+							x = pos_x_r3 + draw_counter_r3[0];
+							y = pos_y_r3 + draw_counter_r3 [4];
+							draw_counter_r3 = draw_counter_r3 + 1'b1;
+							colour = 3'b001;
+						end
+						else begin
+							draw_counter_r3= 8'b00000000;
+							current_state = S_IDLE;
+						end
+					end
+				
+				S_RAIN_4_INIT: begin
+					if (draw_counter_r4 < 6'b10000) begin
+							pos_x_r4 <= random;
+							pos_y_r4 = 8'd0;
+							x = pos_x_r4 + draw_counter_r4[0];
+							y = pos_y_r4 + draw_counter_r4 [4];
+							draw_counter_r4 = draw_counter_r4 + 1'b1;
+							colour = 3'b001;
+						end
+						else begin
+							draw_counter_r4= 8'b00000000;
+							current_state = S_RAIN_5_INIT;
+						end
+					end
+					
+				S_RAIN_5_INIT: begin
+					if (draw_counter_r5 < 6'b10000) begin
+							pos_x_r5 <= random;
+							pos_y_r5 = 8'd0;
+							x = pos_x_r5 + draw_counter_r5[0];
+							y = pos_y_r5 + draw_counter_r5 [4];
+							draw_counter_r5 = draw_counter_r5 + 1'b1;
+							colour = 3'b001;
+						end
+						else begin
+							draw_counter_r5= 8'b00000000;
+							current_state = S_IDLE;
+						end
+					end
+					
 				//idle state
 				S_IDLE: begin
 					if (frame)
@@ -295,12 +374,26 @@ module control(
 					if (move_p1 && pos_x_p1 < 8'd158) begin
 						pos_x_p1 = pos_x_p1 + 1'b1;
 						p1_score = p1_score + 1'b1;
+						if (p1_score >= 10'b1111111111) begin
+							current_state = S_PLAYER1_WIN;
+						end
+						else begin
+							current_state = S_PLAYER1_DRAW;
+						end
 					end
 					if (~move_p1 && pos_x_p1 > 8'd0) begin
 						pos_x_p1 = pos_x_p1 - 1'b1;
 						p1_score = p1_score + 1'b1;
+						if (p1_score >= 10'b1111111111) begin
+							current_state = S_PLAYER1_WIN;
+						end
+						else begin
+							current_state = S_PLAYER1_DRAW;
+						end
 					end
-					current_state = S_PLAYER1_DRAW;
+					if (pos_x_p1 <= 8'd0 | pos_x_p1 >= 8'd158) begin
+						current_state = S_PLAYER1_DRAW;
+					end
 				end
 				
 				//draw player 1
@@ -335,12 +428,26 @@ module control(
 					if (move_p2 && pos_x_p2 < 8'd158) begin
 						pos_x_p2 = pos_x_p2 + 1'b1;
 						p2_score = p2_score + 1'b1;
+						if (p2_score >= 10'b1111111111) begin
+							current_state = S_PLAYER2_WIN;
+						end
+						else begin
+							current_state = S_PLAYER2_DRAW;
+						end
 					end
 					if (~move_p2 && pos_x_p2 > 8'd0) begin
 						pos_x_p2 = pos_x_p2 - 1'b1;
 						p2_score = p2_score + 1'b1;
+						if (p2_score >= 10'b1111111111) begin
+							current_state = S_PLAYER2_WIN;
+						end
+						else begin
+							current_state = S_PLAYER2_DRAW;
+						end
 					end
-					current_state = S_PLAYER2_DRAW;
+					if (pos_x_p2 <= 8'd0 | pos_x_p2 >= 8'd158) begin
+						current_state = S_PLAYER2_DRAW;
+					end
 				end
 				
 				//draw player 2
@@ -357,7 +464,6 @@ module control(
 					end
 				end
 				
-				//erase player 2
 				S_RAIN_1_ERASE: begin
 					if (draw_counter_r1 < 6'b100000) begin
 						x = pos_x_r1 + draw_counter_r1[0];
@@ -399,7 +505,204 @@ module control(
 					end
 					else begin
 						draw_counter_r1= 8'b00000000;
+						current_state = S_RAIN_2_ERASE;
+					end
+				end
+				
+				S_RAIN_2_ERASE: begin
+					if (draw_counter_r2 < 6'b100000) begin
+						x = pos_x_r2 + draw_counter_r2[0];
+						y = pos_y_r2 + draw_counter_r2[6:4];
+						draw_counter_r2 = draw_counter_r2 + 1'b1;
+					end
+					else begin
+						draw_counter_r2= 8'b00000000;
+						current_state = S_RAIN_2_UPDATE;
+					end
+				end
+
+				//update player 2
+				S_RAIN_2_UPDATE: begin
+					if (pos_y_r2 >= 8'd119) begin
+						if (draw_counter_r2 < 17'b10000000000000000) begin
+							x = draw_counter_r2[7:0];
+							y = draw_counter_r2[16:8];
+							draw_counter_r2 = draw_counter_r2 + 1'b1;
+						end
+						else begin
+							draw_counter_r2= 8'b00000000;
+							current_state = S_RAIN_2_INIT;
+						end
+					end
+					else begin
+						pos_y_r2 = pos_y_r2 + 1'b1;
+						current_state = S_RAIN_2_DRAW;
+					end
+				end
+								
+				//draw player 2
+				S_RAIN_2_DRAW: begin
+					if (draw_counter_r2 < 6'b100000) begin
+						x = pos_x_r2 + draw_counter_r2[0];
+						y = pos_y_r2 + draw_counter_r2[6:4];
+						draw_counter_r2 = draw_counter_r2 + 2'b1;
+						colour = 3'b001;
+					end
+					else begin
+						draw_counter_r2= 8'b00000000;
+						current_state = S_RAIN_3_ERASE;
+					end
+				end
+				
+				S_RAIN_3_ERASE: begin
+					if (draw_counter_r3 < 6'b100000) begin
+						x = pos_x_r3 + draw_counter_r3[0];
+						y = pos_y_r3 + draw_counter_r3[6:4];
+						draw_counter_r3 = draw_counter_r3 + 1'b1;
+					end
+					else begin
+						draw_counter_r3= 8'b00000000;
+						current_state = S_RAIN_3_UPDATE;
+					end
+				end
+
+				//update player 2
+				S_RAIN_3_UPDATE: begin
+					if (pos_y_r3 >= 8'd119) begin
+						if (draw_counter_r3 < 17'b10000000000000000) begin
+							x = draw_counter_r3[7:0];
+							y = draw_counter_r3[16:8];
+							draw_counter_r3 = draw_counter_r3 + 1'b1;
+						end
+						else begin
+							draw_counter_r3= 8'b00000000;
+							current_state = S_RAIN_3_INIT;
+						end
+					end
+					else begin
+						pos_y_r3 = pos_y_r3 + 1'b1;
+						current_state = S_RAIN_3_DRAW;
+					end
+				end
+								
+				//draw player 2
+				S_RAIN_3_DRAW: begin
+					if (draw_counter_r3 < 6'b100000) begin
+						x = pos_x_r3 + draw_counter_r3[0];
+						y = pos_y_r3 + draw_counter_r3[6:4];
+						draw_counter_r3 = draw_counter_r3 + 1'b1;
+						colour = 3'b001;
+					end
+					else begin
+						draw_counter_r3 = 8'b00000000;
+						current_state = S_RAIN_4_ERASE;
+					end
+				end
+				
+				S_RAIN_4_ERASE: begin
+					if (draw_counter_r4 < 6'b100000) begin
+						x = pos_x_r4 + draw_counter_r4[0];
+						y = pos_y_r4 + draw_counter_r4[6:4];
+						draw_counter_r4 = draw_counter_r4 + 1'b1;
+					end
+					else begin
+						draw_counter_r4= 8'b00000000;
+						current_state = S_RAIN_4_UPDATE;
+					end
+				end
+
+				S_RAIN_4_UPDATE: begin
+					if (pos_y_r4 >= 8'd119) begin
+						if (draw_counter_r4 < 17'b10000000000000000) begin
+							x = draw_counter_r4[7:0];
+							y = draw_counter_r4[16:8];
+							draw_counter_r4 = draw_counter_r4 + 1'b1;
+						end
+						else begin
+							draw_counter_r4= 8'b00000000;
+							current_state = S_RAIN_4_INIT;
+						end
+					end
+					else begin
+						pos_y_r4 = pos_y_r4 + 1'b1;
+						current_state = S_RAIN_4_DRAW;
+					end
+				end
+								
+				S_RAIN_4_DRAW: begin
+					if (draw_counter_r4 < 6'b100000) begin
+						x = pos_x_r4 + draw_counter_r4[0];
+						y = pos_y_r4 + draw_counter_r4[6:4];
+						draw_counter_r4 = draw_counter_r4 + 1'b1;
+						colour = 3'b001;
+					end
+					else begin
+						draw_counter_r4 = 8'b00000000;
+						current_state = S_RAIN_5_ERASE;
+					end
+				end
+				
+				S_RAIN_5_ERASE: begin
+					if (draw_counter_r5 < 6'b100000) begin
+						x = pos_x_r5 + draw_counter_r5[0];
+						y = pos_y_r5 + draw_counter_r5[6:4];
+						draw_counter_r5 = draw_counter_r5 + 1'b1;
+					end
+					else begin
+						draw_counter_r5= 8'b00000000;
+						current_state = S_RAIN_5_UPDATE;
+					end
+				end
+
+				S_RAIN_5_UPDATE: begin
+					if (pos_y_r5 >= 8'd119) begin
+						if (draw_counter_r5 < 17'b10000000000000000) begin
+							x = draw_counter_r5[7:0];
+							y = draw_counter_r5[16:8];
+							draw_counter_r5 = draw_counter_r5 + 1'b1;
+						end
+						else begin
+							draw_counter_r5= 8'b00000000;
+							current_state = S_RAIN_5_INIT;
+						end
+					end
+					else begin
+						pos_y_r5 = pos_y_r5 + 1'b1;
+						current_state = S_RAIN_5_DRAW;
+					end
+				end
+								
+				S_RAIN_5_DRAW: begin
+					if (draw_counter_r5 < 6'b100000) begin
+						x = pos_x_r5 + draw_counter_r5[0];
+						y = pos_y_r5 + draw_counter_r5[6:4];
+						draw_counter_r5 = draw_counter_r5 + 1'b1;
+						colour = 3'b001;
+					end
+					else begin
+						draw_counter_r5 = 8'b00000000;
 						current_state = S_IDLE;
+					end
+				end
+				
+				
+				S_PLAYER1_WIN: begin
+					p2_score = 8'd69;
+					if (draw_counter_dead < 17'b10000000000000000) begin
+							
+							x = draw_counter_dead[7:0];
+							y = draw_counter_dead[16:8];
+							draw_counter_dead = draw_counter_dead + 1'b1;
+							colour = 3'b010;
+					end
+				end
+				
+				S_PLAYER2_WIN: begin
+					if (draw_counter_dead < 17'b10000000000000000) begin
+							x = draw_counter_dead[7:0];
+							y = draw_counter_dead[16:8];
+							draw_counter_dead = draw_counter_dead + 1'b1;
+							colour = 3'b100;
 					end
 				end
 			endcase	
@@ -513,7 +816,7 @@ module random_num(
 	always @(posedge clk)
 		begin
 			counter <= counter + 1;
-			state <= counter[25];
+			state <= counter[0];
 			if (!state)
 				data <= data;
 			else if(data == 8'b11111111 | data == 8'b00000000)
