@@ -1,59 +1,101 @@
 |Rain
-CLOCK_50 => CLOCK_50.IN2
+CLOCK_50 => CLOCK_50.IN3
 KEY[0] => KEY[0].IN1
-KEY[1] => KEY[1].IN1
-KEY[2] => KEY[2].IN1
+KEY[1] => ~NO_FANOUT~
+KEY[2] => ~NO_FANOUT~
 KEY[3] => ~NO_FANOUT~
-HEX0[0] <= hex_display:h0.port1
-HEX0[1] <= hex_display:h0.port1
-HEX0[2] <= hex_display:h0.port1
-HEX0[3] <= hex_display:h0.port1
-HEX1[0] <= hex_display:h1.port1
-HEX1[1] <= hex_display:h1.port1
-HEX1[2] <= hex_display:h1.port1
-HEX1[3] <= hex_display:h1.port1
-HEX2[0] <= hex_display:h2.port1
-HEX2[1] <= hex_display:h2.port1
-HEX2[2] <= hex_display:h2.port1
-HEX2[3] <= hex_display:h2.port1
-HEX3[0] <= hex_display:h3.port1
-HEX3[1] <= hex_display:h3.port1
-HEX3[2] <= hex_display:h3.port1
-HEX3[3] <= hex_display:h3.port1
-HEX4[0] <= hex_display:h4.port1
-HEX4[1] <= hex_display:h4.port1
-HEX4[2] <= hex_display:h4.port1
-HEX4[3] <= hex_display:h4.port1
-HEX5[0] <= hex_display:h5.port1
-HEX5[1] <= hex_display:h5.port1
-HEX5[2] <= hex_display:h5.port1
-HEX5[3] <= hex_display:h5.port1
-HEX6[0] <= hex_display:h6.port1
-HEX6[1] <= hex_display:h6.port1
-HEX6[2] <= hex_display:h6.port1
-HEX6[3] <= hex_display:h6.port1
-HEX7[0] <= hex_display:h7.port1
-HEX7[1] <= hex_display:h7.port1
-HEX7[2] <= hex_display:h7.port1
-HEX7[3] <= hex_display:h7.port1
-LEDR[0] <= score[0].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[1] <= score[1].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[2] <= score[2].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[3] <= score[3].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[4] <= score[4].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[5] <= score[5].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[6] <= score[6].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[7] <= score[7].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[8] <= score[8].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[9] <= score[9].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[10] <= score[10].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[11] <= score[11].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[12] <= score[12].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[13] <= score[13].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[14] <= score[14].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[15] <= score[15].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[16] <= score[16].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[17] <= score[17].DB_MAX_OUTPUT_PORT_TYPE
+SW[0] => SW[0].IN1
+SW[1] => ~NO_FANOUT~
+SW[2] => ~NO_FANOUT~
+SW[3] => ~NO_FANOUT~
+SW[4] => ~NO_FANOUT~
+SW[5] => ~NO_FANOUT~
+SW[6] => ~NO_FANOUT~
+SW[7] => ~NO_FANOUT~
+SW[8] => ~NO_FANOUT~
+SW[9] => ~NO_FANOUT~
+SW[10] => ~NO_FANOUT~
+SW[11] => ~NO_FANOUT~
+SW[12] => ~NO_FANOUT~
+SW[13] => ~NO_FANOUT~
+SW[14] => ~NO_FANOUT~
+SW[15] => ~NO_FANOUT~
+SW[16] => ~NO_FANOUT~
+SW[17] => SW[17].IN1
+HEX0[0] <= hex_display:p1_hex_ones.port1
+HEX0[1] <= hex_display:p1_hex_ones.port1
+HEX0[2] <= hex_display:p1_hex_ones.port1
+HEX0[3] <= hex_display:p1_hex_ones.port1
+HEX0[4] <= hex_display:p1_hex_ones.port1
+HEX0[5] <= hex_display:p1_hex_ones.port1
+HEX0[6] <= hex_display:p1_hex_ones.port1
+HEX1[0] <= hex_display:p1_hex_tens.port1
+HEX1[1] <= hex_display:p1_hex_tens.port1
+HEX1[2] <= hex_display:p1_hex_tens.port1
+HEX1[3] <= hex_display:p1_hex_tens.port1
+HEX1[4] <= hex_display:p1_hex_tens.port1
+HEX1[5] <= hex_display:p1_hex_tens.port1
+HEX1[6] <= hex_display:p1_hex_tens.port1
+HEX2[0] <= hex_display:p1_hex_hundreds.port1
+HEX2[1] <= hex_display:p1_hex_hundreds.port1
+HEX2[2] <= hex_display:p1_hex_hundreds.port1
+HEX2[3] <= hex_display:p1_hex_hundreds.port1
+HEX2[4] <= hex_display:p1_hex_hundreds.port1
+HEX2[5] <= hex_display:p1_hex_hundreds.port1
+HEX2[6] <= hex_display:p1_hex_hundreds.port1
+HEX3[0] <= hex_display:p1_hex_thousands.port1
+HEX3[1] <= hex_display:p1_hex_thousands.port1
+HEX3[2] <= hex_display:p1_hex_thousands.port1
+HEX3[3] <= hex_display:p1_hex_thousands.port1
+HEX3[4] <= hex_display:p1_hex_thousands.port1
+HEX3[5] <= hex_display:p1_hex_thousands.port1
+HEX3[6] <= hex_display:p1_hex_thousands.port1
+HEX4[0] <= hex_display:p2_hex_ones.port1
+HEX4[1] <= hex_display:p2_hex_ones.port1
+HEX4[2] <= hex_display:p2_hex_ones.port1
+HEX4[3] <= hex_display:p2_hex_ones.port1
+HEX4[4] <= hex_display:p2_hex_ones.port1
+HEX4[5] <= hex_display:p2_hex_ones.port1
+HEX4[6] <= hex_display:p2_hex_ones.port1
+HEX5[0] <= hex_display:p2_hex_tens.port1
+HEX5[1] <= hex_display:p2_hex_tens.port1
+HEX5[2] <= hex_display:p2_hex_tens.port1
+HEX5[3] <= hex_display:p2_hex_tens.port1
+HEX5[4] <= hex_display:p2_hex_tens.port1
+HEX5[5] <= hex_display:p2_hex_tens.port1
+HEX5[6] <= hex_display:p2_hex_tens.port1
+HEX6[0] <= hex_display:p2_hex_hundreds.port1
+HEX6[1] <= hex_display:p2_hex_hundreds.port1
+HEX6[2] <= hex_display:p2_hex_hundreds.port1
+HEX6[3] <= hex_display:p2_hex_hundreds.port1
+HEX6[4] <= hex_display:p2_hex_hundreds.port1
+HEX6[5] <= hex_display:p2_hex_hundreds.port1
+HEX6[6] <= hex_display:p2_hex_hundreds.port1
+HEX7[0] <= hex_display:p2_hex_thousands.port1
+HEX7[1] <= hex_display:p2_hex_thousands.port1
+HEX7[2] <= hex_display:p2_hex_thousands.port1
+HEX7[3] <= hex_display:p2_hex_thousands.port1
+HEX7[4] <= hex_display:p2_hex_thousands.port1
+HEX7[5] <= hex_display:p2_hex_thousands.port1
+HEX7[6] <= hex_display:p2_hex_thousands.port1
+LEDR[0] <= random[0].DB_MAX_OUTPUT_PORT_TYPE
+LEDR[1] <= random[1].DB_MAX_OUTPUT_PORT_TYPE
+LEDR[2] <= random[2].DB_MAX_OUTPUT_PORT_TYPE
+LEDR[3] <= random[3].DB_MAX_OUTPUT_PORT_TYPE
+LEDR[4] <= random[4].DB_MAX_OUTPUT_PORT_TYPE
+LEDR[5] <= random[5].DB_MAX_OUTPUT_PORT_TYPE
+LEDR[6] <= random[6].DB_MAX_OUTPUT_PORT_TYPE
+LEDR[7] <= random[7].DB_MAX_OUTPUT_PORT_TYPE
+LEDR[8] <= <GND>
+LEDR[9] <= <GND>
+LEDR[10] <= <GND>
+LEDR[11] <= <GND>
+LEDR[12] <= <GND>
+LEDR[13] <= <GND>
+LEDR[14] <= <GND>
+LEDR[15] <= <GND>
+LEDR[16] <= <GND>
+LEDR[17] <= <GND>
 VGA_CLK <= vga_adapter:VGA.VGA_CLK
 VGA_HS <= vga_adapter:VGA.VGA_HS
 VGA_VS <= vga_adapter:VGA.VGA_VS
@@ -1250,9 +1292,28 @@ restart => current_state.OUTPUTSELECT
 restart => current_state.OUTPUTSELECT
 restart => current_state.OUTPUTSELECT
 restart => current_state.OUTPUTSELECT
-move_left => always0.IN0
-move_left => always0.IN1
-move_right => always0.IN1
+restart => current_state.OUTPUTSELECT
+restart => current_state.OUTPUTSELECT
+restart => current_state.OUTPUTSELECT
+restart => current_state.OUTPUTSELECT
+restart => current_state.OUTPUTSELECT
+restart => current_state.OUTPUTSELECT
+restart => current_state.OUTPUTSELECT
+restart => current_state.OUTPUTSELECT
+restart => current_state.OUTPUTSELECT
+restart => current_state.OUTPUTSELECT
+move_p1 => always0.IN1
+move_p1 => always0.IN1
+move_p2 => always0.IN1
+move_p2 => always0.IN1
+random[0] => pos_x_r1.DATAB
+random[1] => pos_x_r1.DATAB
+random[2] => pos_x_r1.DATAB
+random[3] => pos_x_r1.DATAB
+random[4] => pos_x_r1.DATAB
+random[5] => pos_x_r1.DATAB
+random[6] => pos_x_r1.DATAB
+random[7] => pos_x_r1.DATAB
 x[0] <= x[0]~reg0.DB_MAX_OUTPUT_PORT_TYPE
 x[1] <= x[1]~reg0.DB_MAX_OUTPUT_PORT_TYPE
 x[2] <= x[2]~reg0.DB_MAX_OUTPUT_PORT_TYPE
@@ -1272,38 +1333,26 @@ y[7] <= y[7]~reg0.DB_MAX_OUTPUT_PORT_TYPE
 colour[0] <= colour[0]~reg0.DB_MAX_OUTPUT_PORT_TYPE
 colour[1] <= colour[1]~reg0.DB_MAX_OUTPUT_PORT_TYPE
 colour[2] <= colour[2]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[0] <= score[0]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[1] <= score[1]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[2] <= score[2]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[3] <= score[3]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[4] <= score[4]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[5] <= score[5]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[6] <= score[6]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[7] <= score[7]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[8] <= score[8]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[9] <= score[9]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[10] <= score[10]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[11] <= score[11]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[12] <= score[12]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[13] <= score[13]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[14] <= score[14]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[15] <= score[15]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[16] <= score[16]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[17] <= score[17]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[18] <= score[18]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[19] <= score[19]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[20] <= score[20]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[21] <= score[21]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[22] <= score[22]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[23] <= score[23]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[24] <= score[24]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[25] <= score[25]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[26] <= score[26]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[27] <= score[27]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[28] <= score[28]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[29] <= score[29]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[30] <= score[30]~reg0.DB_MAX_OUTPUT_PORT_TYPE
-score[31] <= score[31]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p1_score[0] <= p1_score[0]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p1_score[1] <= p1_score[1]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p1_score[2] <= p1_score[2]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p1_score[3] <= p1_score[3]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p1_score[4] <= p1_score[4]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p1_score[5] <= p1_score[5]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p1_score[6] <= p1_score[6]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p1_score[7] <= p1_score[7]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p1_score[8] <= p1_score[8]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p1_score[9] <= p1_score[9]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p2_score[0] <= p2_score[0]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p2_score[1] <= p2_score[1]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p2_score[2] <= p2_score[2]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p2_score[3] <= p2_score[3]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p2_score[4] <= p2_score[4]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p2_score[5] <= p2_score[5]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p2_score[6] <= p2_score[6]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p2_score[7] <= p2_score[7]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p2_score[8] <= p2_score[8]~reg0.DB_MAX_OUTPUT_PORT_TYPE
+p2_score[9] <= p2_score[9]~reg0.DB_MAX_OUTPUT_PORT_TYPE
 
 
 |Rain|control:c0|clock:comb_3
@@ -1331,7 +1380,156 @@ clock => frame_counter[19].CLK
 clk <= frame.DB_MAX_OUTPUT_PORT_TYPE
 
 
-|Rain|hex_display:h0
+|Rain|random_num:rand_gen
+clk => data[0].CLK
+clk => data[1].CLK
+clk => data[2].CLK
+clk => data[3].CLK
+clk => data[4].CLK
+clk => data[5].CLK
+clk => data[6].CLK
+clk => data[7].CLK
+clk => data[8].CLK
+clk => state.CLK
+clk => counter[0].CLK
+clk => counter[1].CLK
+clk => counter[2].CLK
+clk => counter[3].CLK
+clk => counter[4].CLK
+clk => counter[5].CLK
+clk => counter[6].CLK
+clk => counter[7].CLK
+clk => counter[8].CLK
+clk => counter[9].CLK
+clk => counter[10].CLK
+clk => counter[11].CLK
+clk => counter[12].CLK
+clk => counter[13].CLK
+clk => counter[14].CLK
+clk => counter[15].CLK
+clk => counter[16].CLK
+clk => counter[17].CLK
+clk => counter[18].CLK
+clk => counter[19].CLK
+clk => counter[20].CLK
+clk => counter[21].CLK
+clk => counter[22].CLK
+clk => counter[23].CLK
+clk => counter[24].CLK
+clk => counter[25].CLK
+clk => counter[26].CLK
+clk => counter[27].CLK
+clk => counter[28].CLK
+clk => counter[29].CLK
+clk => counter[30].CLK
+clk => counter[31].CLK
+clk => counter[32].CLK
+data_out[0] <= data[0].DB_MAX_OUTPUT_PORT_TYPE
+data_out[1] <= data[1].DB_MAX_OUTPUT_PORT_TYPE
+data_out[2] <= data[2].DB_MAX_OUTPUT_PORT_TYPE
+data_out[3] <= data[3].DB_MAX_OUTPUT_PORT_TYPE
+data_out[4] <= data[4].DB_MAX_OUTPUT_PORT_TYPE
+data_out[5] <= data[5].DB_MAX_OUTPUT_PORT_TYPE
+data_out[6] <= data[6].DB_MAX_OUTPUT_PORT_TYPE
+data_out[7] <= data[7].DB_MAX_OUTPUT_PORT_TYPE
+data_out[8] <= data[8].DB_MAX_OUTPUT_PORT_TYPE
+
+
+|Rain|BCD:p1_bcd
+binary[0] => Ones[0].DATAIN
+binary[1] => LessThan11.IN8
+binary[1] => Add11.IN8
+binary[1] => Ones.DATAA
+binary[2] => LessThan8.IN8
+binary[2] => Add8.IN8
+binary[2] => Ones.DATAA
+binary[3] => LessThan6.IN8
+binary[3] => Add6.IN8
+binary[3] => Ones.DATAA
+binary[4] => LessThan4.IN8
+binary[4] => Add4.IN8
+binary[4] => Ones.DATAA
+binary[5] => LessThan2.IN8
+binary[5] => Add2.IN8
+binary[5] => Ones.DATAA
+binary[6] => LessThan1.IN8
+binary[6] => Add1.IN8
+binary[6] => Ones.DATAA
+binary[7] => LessThan0.IN6
+binary[7] => Add0.IN6
+binary[7] => Ones.DATAA
+binary[8] => LessThan0.IN5
+binary[8] => Add0.IN5
+binary[8] => Ones.DATAA
+binary[9] => LessThan0.IN4
+binary[9] => Add0.IN4
+binary[9] => Ones.DATAA
+Thousands[0] <= Hundreds.DB_MAX_OUTPUT_PORT_TYPE
+Thousands[1] <= <GND>
+Thousands[2] <= <GND>
+Thousands[3] <= <GND>
+Hundreds[0] <= Tens.DB_MAX_OUTPUT_PORT_TYPE
+Hundreds[1] <= Hundreds.DB_MAX_OUTPUT_PORT_TYPE
+Hundreds[2] <= Hundreds.DB_MAX_OUTPUT_PORT_TYPE
+Hundreds[3] <= Hundreds.DB_MAX_OUTPUT_PORT_TYPE
+Tens[0] <= Ones.DB_MAX_OUTPUT_PORT_TYPE
+Tens[1] <= Tens.DB_MAX_OUTPUT_PORT_TYPE
+Tens[2] <= Tens.DB_MAX_OUTPUT_PORT_TYPE
+Tens[3] <= Tens.DB_MAX_OUTPUT_PORT_TYPE
+Ones[0] <= binary[0].DB_MAX_OUTPUT_PORT_TYPE
+Ones[1] <= Ones.DB_MAX_OUTPUT_PORT_TYPE
+Ones[2] <= Ones.DB_MAX_OUTPUT_PORT_TYPE
+Ones[3] <= Ones.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|Rain|BCD:p2_bcd
+binary[0] => Ones[0].DATAIN
+binary[1] => LessThan11.IN8
+binary[1] => Add11.IN8
+binary[1] => Ones.DATAA
+binary[2] => LessThan8.IN8
+binary[2] => Add8.IN8
+binary[2] => Ones.DATAA
+binary[3] => LessThan6.IN8
+binary[3] => Add6.IN8
+binary[3] => Ones.DATAA
+binary[4] => LessThan4.IN8
+binary[4] => Add4.IN8
+binary[4] => Ones.DATAA
+binary[5] => LessThan2.IN8
+binary[5] => Add2.IN8
+binary[5] => Ones.DATAA
+binary[6] => LessThan1.IN8
+binary[6] => Add1.IN8
+binary[6] => Ones.DATAA
+binary[7] => LessThan0.IN6
+binary[7] => Add0.IN6
+binary[7] => Ones.DATAA
+binary[8] => LessThan0.IN5
+binary[8] => Add0.IN5
+binary[8] => Ones.DATAA
+binary[9] => LessThan0.IN4
+binary[9] => Add0.IN4
+binary[9] => Ones.DATAA
+Thousands[0] <= Hundreds.DB_MAX_OUTPUT_PORT_TYPE
+Thousands[1] <= <GND>
+Thousands[2] <= <GND>
+Thousands[3] <= <GND>
+Hundreds[0] <= Tens.DB_MAX_OUTPUT_PORT_TYPE
+Hundreds[1] <= Hundreds.DB_MAX_OUTPUT_PORT_TYPE
+Hundreds[2] <= Hundreds.DB_MAX_OUTPUT_PORT_TYPE
+Hundreds[3] <= Hundreds.DB_MAX_OUTPUT_PORT_TYPE
+Tens[0] <= Ones.DB_MAX_OUTPUT_PORT_TYPE
+Tens[1] <= Tens.DB_MAX_OUTPUT_PORT_TYPE
+Tens[2] <= Tens.DB_MAX_OUTPUT_PORT_TYPE
+Tens[3] <= Tens.DB_MAX_OUTPUT_PORT_TYPE
+Ones[0] <= binary[0].DB_MAX_OUTPUT_PORT_TYPE
+Ones[1] <= Ones.DB_MAX_OUTPUT_PORT_TYPE
+Ones[2] <= Ones.DB_MAX_OUTPUT_PORT_TYPE
+Ones[3] <= Ones.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|Rain|hex_display:p1_hex_ones
 IN[0] => Decoder0.IN3
 IN[1] => Decoder0.IN2
 IN[2] => Decoder0.IN1
@@ -1346,7 +1544,7 @@ OUT[6] <= WideOr0.DB_MAX_OUTPUT_PORT_TYPE
 OUT[7] <= <GND>
 
 
-|Rain|hex_display:h1
+|Rain|hex_display:p1_hex_tens
 IN[0] => Decoder0.IN3
 IN[1] => Decoder0.IN2
 IN[2] => Decoder0.IN1
@@ -1361,7 +1559,7 @@ OUT[6] <= WideOr0.DB_MAX_OUTPUT_PORT_TYPE
 OUT[7] <= <GND>
 
 
-|Rain|hex_display:h2
+|Rain|hex_display:p1_hex_hundreds
 IN[0] => Decoder0.IN3
 IN[1] => Decoder0.IN2
 IN[2] => Decoder0.IN1
@@ -1376,7 +1574,7 @@ OUT[6] <= WideOr0.DB_MAX_OUTPUT_PORT_TYPE
 OUT[7] <= <GND>
 
 
-|Rain|hex_display:h3
+|Rain|hex_display:p1_hex_thousands
 IN[0] => Decoder0.IN3
 IN[1] => Decoder0.IN2
 IN[2] => Decoder0.IN1
@@ -1391,7 +1589,7 @@ OUT[6] <= WideOr0.DB_MAX_OUTPUT_PORT_TYPE
 OUT[7] <= <GND>
 
 
-|Rain|hex_display:h4
+|Rain|hex_display:p2_hex_ones
 IN[0] => Decoder0.IN3
 IN[1] => Decoder0.IN2
 IN[2] => Decoder0.IN1
@@ -1406,7 +1604,7 @@ OUT[6] <= WideOr0.DB_MAX_OUTPUT_PORT_TYPE
 OUT[7] <= <GND>
 
 
-|Rain|hex_display:h5
+|Rain|hex_display:p2_hex_tens
 IN[0] => Decoder0.IN3
 IN[1] => Decoder0.IN2
 IN[2] => Decoder0.IN1
@@ -1421,7 +1619,7 @@ OUT[6] <= WideOr0.DB_MAX_OUTPUT_PORT_TYPE
 OUT[7] <= <GND>
 
 
-|Rain|hex_display:h6
+|Rain|hex_display:p2_hex_hundreds
 IN[0] => Decoder0.IN3
 IN[1] => Decoder0.IN2
 IN[2] => Decoder0.IN1
@@ -1436,7 +1634,7 @@ OUT[6] <= WideOr0.DB_MAX_OUTPUT_PORT_TYPE
 OUT[7] <= <GND>
 
 
-|Rain|hex_display:h7
+|Rain|hex_display:p2_hex_thousands
 IN[0] => Decoder0.IN3
 IN[1] => Decoder0.IN2
 IN[2] => Decoder0.IN1

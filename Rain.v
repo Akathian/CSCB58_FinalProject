@@ -73,30 +73,26 @@ module Rain
 	wire [9:0] p1_score, p2_score;
 	input [17:0] SW;
 	output [17:0] LEDR;
-	wire [7:0] rand;
+	wire [7:0] random;
 	
 	control c0(.clk(CLOCK_50),
 					.restart(KEY[0]),
 					.move_p1(SW[0]),
 					.move_p2(SW[17]),
+					.random(random),
 					.x(x),
 					.y(y),
 					.colour(colour),
 					.p1_score(p1_score),
 					.p2_score(p2_score)
 					);
-					
-	
+	random_num rand_gen(.clk(CLOCK_50), .data_out(random));				
 	
 	
 	output [6:0] HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7;
 	wire [3:0] p1_thousands, p1_hundreds, p1_tens, p1_ones;
 	wire [3:0] p2_thousands, p2_hundreds, p2_tens, p2_ones;
-	
-	wire [7:0] random;
-	wire r;
-	assign r = SW[4];
-	random_num rand_gen(.clk(CLOCK_50), .reset(r), .data_out(random));
+
 	assign LEDR[7:0] = random;
 	
 	BCD p1_bcd(
@@ -135,6 +131,7 @@ module control(
 	input restart,
 	input move_p1,
 	input move_p2,
+	input [7:0] random,
 	output reg [7:0] x,
 	output reg [7:0] y,
 	output reg [2:0] colour,
@@ -150,7 +147,6 @@ module control(
    reg [17:0] draw_counter_p1, draw_counter_p2;
 	reg [17:0] draw_counter_r1;
 	reg [31:0] score_counter;
-	
 
 	
 	wire frame;
@@ -176,7 +172,7 @@ module control(
 					S_RAIN_1_DRAW			= 6'd15;
 		
    clock(.clock(clk), .clk(frame));
-			
+
    // Next state logic aka our state table
    always@(posedge clk)
 		begin
@@ -209,7 +205,6 @@ module control(
 						p2_score = 10'b0;
 						draw_counter_p2 = draw_counter_p2 + 1'b1;
 					end
-
 					else begin
 						draw_counter_p2= 8'b00000000;
 						current_state = S_RESET_R1;
@@ -264,7 +259,7 @@ module control(
 				
 				S_RAIN_1_INIT: begin
 					if (draw_counter_r1 < 6'b10000) begin
-							pos_x_r1 = 8'b10;
+							pos_x_r1 <= random;
 							pos_y_r1 = 8'd0;
 							x = pos_x_r1 + draw_counter_r1[0];
 							y = pos_y_r1 + draw_counter_r1 [4];
@@ -377,8 +372,21 @@ module control(
 
 				//update player 2
 				S_RAIN_1_UPDATE: begin
-					pos_y_r1 = pos_y_r1 + 1'b1;
-					current_state = S_RAIN_1_DRAW;
+					if (pos_y_r1 >= 8'd119) begin
+						if (draw_counter_r1 < 17'b10000000000000000) begin
+							x = draw_counter_r1[7:0];
+							y = draw_counter_r1[16:8];
+							draw_counter_r1 = draw_counter_r1 + 1'b1;
+						end
+						else begin
+							draw_counter_r1= 8'b00000000;
+							current_state = S_RAIN_1_INIT;
+						end
+					end
+					else begin
+						pos_y_r1 = pos_y_r1 + 1'b1;
+						current_state = S_RAIN_1_DRAW;
+					end
 				end
 								
 				//draw player 2
@@ -496,17 +504,22 @@ endmodule
 
 module random_num(
 	input  clk,
-   input  reset,
    output [8:0] data_out);
 	reg [8:0] data = 8'd1;
+	reg [32:0] counter;
+	reg state;
+	reg newbit;
+	
 	always @(posedge clk)
 		begin
-			if (!reset)
+			counter <= counter + 1;
+			state <= counter[25];
+			if (!state)
 				data <= data;
 			else if(data == 8'b11111111 | data == 8'b00000000)
 				data <= 8'd1;
-			else 
-				data <= {data[7:0], data[7] ^ data[1]};
+			else
+				data <= {data[7:0], data[6] ^ data[5]};
 			end
 		assign data_out = data;
 endmodule
