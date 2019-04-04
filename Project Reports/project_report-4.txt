@@ -55,6 +55,10 @@ Week 3:
 
 	The intial stages of the 'rain' or the obstacles are complete now. We managed to get the obstacles fall from the top of the screen and continue vertically till they reach the bottom. The rain then wraps around to the top of the screen. However, instead of hard coding the position of the rain, we aim to add in random positioning. To this end, we managed to implement a pseudo-random number generator. At this point, the generator can create random 8 bit numbers, however the user needs to flip a switch in order for a new random number to be generated. We're trying to figure out how to generate this number automatically and to assign it to the rain so that we can have true randomized obstacles. If that fails, we will just hard code the obstacles. We also have to implement hit detection, but other than that, our project is basically complete.
 
+Week 4:
+
+	Week 4 ended in the culmination of the final project. We got randomized blocks to work. We used the psuedo-random number generator code that we developed last week, and made it so that our program continously generates new random numbers. The blocks fall till they reach the bottom of the screen, before they are reinitialized. We also added hit detection, so now our game is functional. When a player is hit, the game ends and the screen turns the colour of the winning player. That is to say that when the red player gets hit, the screen turns green and similarly when the green player gets hit, the screen turns red. The score keeps incrementing till 1023, and if neither player gets hit, the first player to reach that milestone will win. 
+
 References
 ----------
 <In this space clearly indicate all external sources used in this project. If you used anyone else's code (from previous B58 projects or other sources) clearly indicate what you used and where you found it. Usage of any material not credited in this space will be considered plagiarism. It is absolutely OK and expected to update this section as you progress in the projected.
