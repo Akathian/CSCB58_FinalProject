@@ -80,5 +80,6 @@ Repo & Video
 ------------
 <At the end of the project, provide links to your code repository and presentation video (and passwords if not public>
 https://github.com/Akathian/CSCB58_FinalProject
+https://www.youtube.com/watch?v=9n59mADAYR4&feature=youtu.be&fbclid=IwAR1-UqC7gyPG5aiG0iKPH90pk_Xx3PCUMMhruupL0BQW57hahupl8lIB35k
 
 
